@@ -1,10 +1,11 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import fetch from 'node-fetch';
-dotenv.config();
 
 const app = express();
 const port = 3001;
+
+dotenv.config();
 
 app.use(express.json());
 

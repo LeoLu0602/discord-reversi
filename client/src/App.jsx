@@ -1,12 +1,10 @@
 import { DiscordSDK } from '@discord/embedded-app-sdk';
 import { useEffect, useState } from 'react';
-import { createRoom, getRoom, updateRoom, deleteRoom } from './supabase';
 
 export default function App() {
     const [p1, setP1] = useState(null);
     const [p2, setP2] = useState(null);
     const [user, setUser] = useState(null);
-    const [channelId, setChannelId] = useState(null);
     const isUserP1 = p1 && user && p1.id === user.id;
     const isUserP2 = p2 && user && p2.id === user.id;
 
@@ -66,7 +64,6 @@ export default function App() {
                     });
 
                     if (channel.name !== null) {
-                        setChannelId(channel.id);
                     }
                 }
             } catch (err) {
