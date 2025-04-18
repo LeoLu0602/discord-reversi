@@ -41,7 +41,7 @@ export default function App() {
                     access_token,
                 });
 
-                if (auth == null) {
+                if (auth === null) {
                     throw new Error('Authenticate command failed');
                 }
 
@@ -54,6 +54,19 @@ export default function App() {
                     global_name,
                     avatar,
                 });
+
+                if (
+                    discordSdk.channelId !== null &&
+                    discordSdk.guildId !== null
+                ) {
+                    const channel = await discordSdk.commands.getChannel({
+                        channel_id: discordSdk.channelId,
+                    });
+
+                    if (channel.name !== null) {
+                        console.log(channel.id);
+                    }
+                }
             } catch (err) {
                 console.error(err);
             }
