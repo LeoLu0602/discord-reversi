@@ -64,6 +64,21 @@ export default function App() {
                     });
 
                     if (channel.name !== null) {
+                        const { room } = await fetch(
+                            `/.proxy/api/room/${channel.id}`
+                        );
+
+                        if (!room) {
+                            await fetch('/.proxy/api/room', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    channel_id: channel.id,
+                                }),
+                            });
+                        }
                     }
                 }
             } catch (err) {
