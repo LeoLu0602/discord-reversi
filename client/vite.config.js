@@ -7,5 +7,13 @@ export default defineConfig({
     plugins: [react(), tailwindcss()],
     server: {
         allowedHosts: ['difficulty-specialties-exhibit-lc.trycloudflare.com'],
+        proxy: {
+            '/api': {
+                target: 'http://localhost:3001',
+                changeOrigin: true,
+                secure: false,
+                ws: true,
+            },
+        },
     },
 });
