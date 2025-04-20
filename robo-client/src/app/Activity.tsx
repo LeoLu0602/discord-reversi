@@ -487,7 +487,7 @@ export function Activity() {
                 <div className="absolute right-0 p-2 top-0 w-48 h-screen bg-[#262522] text-white flex-col gap-4 overflow-auto">
                     <div className="mb-2">Black</div>
                     {p1 ? (
-                        <UserCard user={p1} />
+                        <UserCard user={p1} isUserTurn={turn === 1} />
                     ) : (
                         <button
                             className="block w-full h-24 bg-[#373633] hover:bg-[#5b5954] text-4xl cursor-pointer mb-2"
@@ -504,7 +504,7 @@ export function Activity() {
                     )}
                     <div className="mb-2">White</div>
                     {p2 ? (
-                        <UserCard user={p2} />
+                        <UserCard user={p2} isUserTurn={turn === 2} />
                     ) : (
                         <button
                             className="block w-full h-24 bg-[#373633] hover:bg-[#5b5954] text-4xl cursor-pointer mb-2"
