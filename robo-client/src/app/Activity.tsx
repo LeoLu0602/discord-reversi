@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useDiscordSdk } from '../hooks/useDiscordSdk';
 import { useSyncState } from '@robojs/sync';
+import UserCard from '../components/UserCard';
 
-interface UserType {
+export interface UserType {
     id: string;
     username: string;
     global_name: string;
@@ -47,16 +48,7 @@ export function Activity() {
                         <>
                             <div className="mb-2">Black</div>
                             {p1 ? (
-                                <div className="w-full h-24 p-2 bg-[#373633] flex items-center mb-2">
-                                    <img
-                                        className="h-full aspect-square"
-                                        src={`https://cdn.discordapp.com/avatars/${p1.id}/${p1.avatar}.png`}
-                                    />
-                                    <div className="h-full grow px-2">
-                                        <div>{p1.global_name}</div>
-                                        <div>1000</div>
-                                    </div>
-                                </div>
+                                <UserCard user={p1} />
                             ) : (
                                 <button
                                     className="block w-full h-24 bg-[#373633] hover:bg-[#5b5954] text-4xl cursor-pointer mb-2"
@@ -73,16 +65,7 @@ export function Activity() {
                             )}
                             <div className="mb-2">White</div>
                             {p2 ? (
-                                <div className="w-full h-24 p-2 bg-[#373633] flex items-center mb-2">
-                                    <img
-                                        className="h-full aspect-square"
-                                        src={`https://cdn.discordapp.com/avatars/${p2.id}/${p2.avatar}.png`}
-                                    />
-                                    <div className="h-full grow px-2">
-                                        <div>{p2.global_name}</div>
-                                        <div>1000</div>
-                                    </div>
-                                </div>
+                                <UserCard user={p2} />
                             ) : (
                                 <button
                                     className="block w-full h-24 bg-[#373633] hover:bg-[#5b5954] text-4xl cursor-pointer mb-2"
