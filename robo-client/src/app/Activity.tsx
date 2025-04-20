@@ -1,93 +1,42 @@
-import { DiscordSDK } from '@discord/embedded-app-sdk';
 import { useEffect, useState } from 'react';
+import { useDiscordSdk } from '../hooks/useDiscordSdk';
+import { useSyncState } from '@robojs/sync';
 
-export default function App() {
-    const [p1, setP1] = useState(null);
-    const [p2, setP2] = useState(null);
-    const [user, setUser] = useState(null);
+interface UserType {
+    id: string;
+    username: string;
+    global_name: string;
+    avatar: string;
+}
+
+export function Activity() {
+    const { session, discordSdk } = useDiscordSdk();
+    const [p1, setP1] = useSyncState<UserType | null>(null, [
+        'p1',
+        discordSdk.channelId,
+    ]);
+    const [p2, setP2] = useSyncState<UserType | null>(null, [
+        'p2',
+        discordSdk.channelId,
+    ]);
+    const [user, setUser] = useState<UserType | null>(null);
     const isUserP1 = p1 && user && p1.id === user.id;
     const isUserP2 = p2 && user && p2.id === user.id;
 
+    console.log('p1: ', p1);
+
     useEffect(() => {
-        async function setUp() {
-            const discordSdk = new DiscordSDK(
-                import.meta.env.VITE_DISCORD_CLIENT_ID
-            );
+        if (session) {
+            const { id, username, global_name, avatar } = session.user;
 
-            try {
-                await discordSdk.ready();
-                console.log('Discord SDK is ready');
-
-                const { code } = await discordSdk.commands.authorize({
-                    client_id: import.meta.env.VITE_DISCORD_CLIENT_ID,
-                    response_type: 'code',
-                    state: '',
-                    prompt: 'none',
-                    scope: ['identify', 'guilds', 'applications.commands'],
-                });
-
-                const response = await fetch('/.proxy/api/token', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        code,
-                    }),
-                });
-                const { access_token } = await response.json();
-
-                const auth = await discordSdk.commands.authenticate({
-                    access_token,
-                });
-
-                if (auth === null) {
-                    throw new Error('Authenticate command failed');
-                }
-
-                const { user } = auth;
-                const { id, username, global_name, avatar } = user;
-
-                setUser({
-                    id,
-                    username,
-                    global_name,
-                    avatar,
-                });
-
-                if (
-                    discordSdk.channelId !== null &&
-                    discordSdk.guildId !== null
-                ) {
-                    const channel = await discordSdk.commands.getChannel({
-                        channel_id: discordSdk.channelId,
-                    });
-
-                    if (channel.name !== null) {
-                        const { room } = await fetch(
-                            `/.proxy/api/room/${channel.id}`
-                        );
-
-                        if (!room) {
-                            await fetch('/.proxy/api/room', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                },
-                                body: JSON.stringify({
-                                    channel_id: channel.id,
-                                }),
-                            });
-                        }
-                    }
-                }
-            } catch (err) {
-                console.error(err);
-            }
+            setUser({
+                id,
+                username,
+                global_name: global_name ?? '',
+                avatar: avatar ?? '',
+            });
         }
-
-        setUp();
-    }, []);
+    }, [session]);
 
     return (
         <>
@@ -116,7 +65,7 @@ export default function App() {
                                             setP2(null);
                                         }
 
-                                        setP1(user);
+                                        setP1({ ...user });
                                     }}
                                 >
                                     &#43;
