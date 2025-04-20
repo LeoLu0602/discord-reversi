@@ -1,6 +1,12 @@
 import clsx from 'clsx';
 
-export default function Board({ board }: { board: number[][] }) {
+export default function Board({
+    board,
+    updateBoard,
+}: {
+    board: number[][];
+    updateBoard: (row: number, col: number) => void;
+}) {
     return (
         <div className="h-screen aspect-square bg-emerald-500">
             {board.map((row, i) => (
@@ -19,11 +25,16 @@ export default function Board({ board }: { board: number[][] }) {
                                     'border-r-2': j < row.length - 1,
                                 }
                             )}
+                            onClick={() => {
+                                updateBoard(i, j);
+                            }}
                         >
                             {cell === 1 ? (
                                 <div className="bg-black w-4/5 h-4/5 rounded-full" />
                             ) : cell === 2 ? (
                                 <div className="bg-white w-4/5 h-4/5 rounded-full" />
+                            ) : cell === 3 ? (
+                                <div className="bg-emerald-300 w-full h-full" />
                             ) : (
                                 <></>
                             )}
