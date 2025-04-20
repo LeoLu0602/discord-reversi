@@ -46,7 +46,10 @@ export function Activity() {
         return i >= 0 && i < ROWS && j >= 0 && j < COLS;
     }
 
-    function searchLegalMoves(board: number[][]): [number, number][] {
+    function searchLegalMoves(
+        board: number[][],
+        turn: 1 | 2
+    ): [number, number][] {
         const set = new Set<number>();
 
         for (let i = 0; i < board.length; i++) {
@@ -227,15 +230,143 @@ export function Activity() {
         return Array.from(set).map((x) => [Math.floor(x / COLS), x % COLS]);
     }
 
-    function updateBoard(row: number, col: number) {
+    function updateBoard(i: number, j: number) {
+        if (board[i][j] !== 3) {
+            return;
+        }
+
+        const newBoard = structuredClone(board);
+
+        newBoard[i][j] = turn;
+
+        // replace all 3s with 0s
+        for (let i = 0; i < newBoard.length; i++) {
+            for (let j = 0; j < newBoard[0].length; j++) {
+                if (newBoard[i][j] === 3) {
+                    newBoard[i][j] = 0;
+                }
+            }
+        }
+
+        let ii;
+        let jj;
+
         // ↑
+        ii = i - 1;
+        jj = j;
+
+        while (isInBound(ii, jj)) {
+            if (newBoard[ii][jj] === turn || newBoard[ii][jj] === 0) {
+                break;
+            }
+
+            newBoard[ii][jj] = turn;
+            ii--;
+        }
+
         // ↓
+        ii = i + 1;
+        jj = j;
+
+        while (isInBound(ii, jj)) {
+            if (newBoard[ii][jj] === turn || newBoard[ii][jj] === 0) {
+                break;
+            }
+
+            newBoard[ii][jj] = turn;
+            ii++;
+        }
+
         // ←
+        ii = i;
+        jj = j - 1;
+
+        while (isInBound(ii, jj)) {
+            if (newBoard[ii][jj] === turn || newBoard[ii][jj] === 0) {
+                break;
+            }
+
+            newBoard[ii][jj] = turn;
+            jj--;
+        }
+
         // →
+        ii = i;
+        jj = j + 1;
+
+        while (isInBound(ii, jj)) {
+            if (newBoard[ii][jj] === turn || newBoard[ii][jj] === 0) {
+                break;
+            }
+
+            newBoard[ii][jj] = turn;
+            jj++;
+        }
+
         // ↖
+        ii = i - 1;
+        jj = j - 1;
+
+        while (isInBound(ii, jj)) {
+            if (newBoard[ii][jj] === turn || newBoard[ii][jj] === 0) {
+                break;
+            }
+
+            newBoard[ii][jj] = turn;
+            ii--;
+            jj--;
+        }
+
         // ↙
+        ii = i + 1;
+        jj = j - 1;
+
+        while (isInBound(ii, jj)) {
+            if (newBoard[ii][jj] === turn || newBoard[ii][jj] === 0) {
+                break;
+            }
+
+            newBoard[ii][jj] = turn;
+            ii++;
+            jj++;
+        }
+
         // ↗
+        ii = i - 1;
+        jj = j + 1;
+
+        while (isInBound(ii, jj)) {
+            if (newBoard[ii][jj] === turn || newBoard[ii][jj] === 0) {
+                break;
+            }
+
+            newBoard[ii][jj] = turn;
+            ii--;
+            jj++;
+        }
+
         // ↘
+        ii = i + 1;
+        jj = j + 1;
+
+        while (isInBound(ii, jj)) {
+            if (newBoard[ii][jj] === turn || newBoard[ii][jj] === 0) {
+                break;
+            }
+
+            newBoard[ii][jj] = turn;
+            ii++;
+            jj++;
+        }
+
+        const legalMoves = searchLegalMoves(newBoard, turn === 1 ? 2 : 1);
+
+        for (const [i, j] of legalMoves) {
+            newBoard[i][j] = 3;
+        }
+
+        setBoard(newBoard);
+        setTurn((oldVal) => (oldVal === 1 ? 2 : 1));
     }
 
     useEffect(() => {
@@ -256,7 +387,9 @@ export function Activity() {
             newBoard[4][3] = 1;
             newBoard[4][4] = 2;
 
-            const legalMoves = searchLegalMoves(newBoard);
+            const legalMoves = searchLegalMoves(newBoard, 1);
+
+            console.log(legalMoves);
 
             for (const [i, j] of legalMoves) {
                 newBoard[i][j] = 3;
