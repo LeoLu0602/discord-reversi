@@ -536,20 +536,6 @@ export function Activity() {
                             &#43;
                         </button>
                     )}
-                    {(isUserP1 || isUserP2) && (
-                        <button
-                            className="block w-full h-8 bg-red-500 hover:bg-red-400 text-lg cursor-pointer"
-                            onClick={() => {
-                                if (isUserP1) {
-                                    setP1(null);
-                                } else if (isUserP2) {
-                                    setP2(null);
-                                }
-                            }}
-                        >
-                            Leave
-                        </button>
-                    )}
                 </div>
             </div>
         </>
