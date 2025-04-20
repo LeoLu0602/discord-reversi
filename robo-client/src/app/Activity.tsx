@@ -247,7 +247,9 @@ export function Activity() {
         if (
             board[i][j] !== 3 ||
             (turn === 1 && !isUserP1) ||
-            (turn === 2 && !isUserP2)
+            (turn === 2 && !isUserP2) ||
+            !p1 ||
+            !p2
         ) {
             return;
         }
