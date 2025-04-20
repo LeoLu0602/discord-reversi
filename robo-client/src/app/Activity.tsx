@@ -239,8 +239,16 @@ export function Activity() {
         return Array.from(set).map((x) => [Math.floor(x / COLS), x % COLS]);
     }
 
+    function getScores(board: (0 | 1 | 2 | 3)[][]): [number, number] {
+        return [0, 0];
+    }
+
     function updateBoard(i: number, j: number) {
-        if (board[i][j] !== 3) {
+        if (
+            board[i][j] !== 3 ||
+            (turn === 1 && !isUserP1) ||
+            (turn === 2 && !isUserP2)
+        ) {
             return;
         }
 
@@ -447,6 +455,8 @@ export function Activity() {
             newBoard[i][j] = 3;
         }
 
+        const [blackScore, whiteScore] = getScores(newBoard);
+
         setBoard(newBoard);
         setTurn((oldVal) => (oldVal === 1 ? 2 : 1));
     }
@@ -463,10 +473,6 @@ export function Activity() {
             });
         }
     }, [session]);
-
-    useEffect(() => {
-        return () => {};
-    }, []);
 
     if (!user) {
         <div className="w-full h-screen bg-[#302e2b] flex justify-center items-center" />;
