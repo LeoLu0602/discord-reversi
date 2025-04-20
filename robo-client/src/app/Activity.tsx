@@ -535,7 +535,7 @@ export function Activity() {
                             className="block w-full h-24 bg-[#373633] hover:bg-[#5b5954] text-4xl cursor-pointer mb-2"
                             onClick={() => {
                                 if (!isUserP1 && !isUserP2) {
-                                    setP1({ ...user });
+                                    setP2({ ...user });
                                 }
                             }}
                         >
