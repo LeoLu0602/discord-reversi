@@ -3,6 +3,7 @@ import { useDiscordSdk } from '../hooks/useDiscordSdk';
 import { useSyncState } from '@robojs/sync';
 import UserCard from '../components/UserCard';
 import Board from '../components/Board';
+import Scores from '../components/Scores';
 
 export interface UserType {
     id: string;
@@ -13,6 +14,16 @@ export interface UserType {
 
 const ROWS = 8;
 const COLS = 8;
+const INIT_BOARD: (0 | 1 | 2 | 3)[][] = [
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 3, 0, 0, 0, 0],
+    [0, 0, 3, 2, 1, 0, 0, 0],
+    [0, 0, 0, 1, 2, 3, 0, 0],
+    [0, 0, 0, 0, 3, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+];
 
 export function Activity() {
     const { session, discordSdk } = useDiscordSdk();
@@ -35,21 +46,13 @@ export function Activity() {
 		2: white
 		3: legal move
     */
-    const [board, setBoard] = useSyncState<(0 | 1 | 2 | 3)[][]>(
-        [
-            [0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 3, 0, 0, 0, 0],
-            [0, 0, 3, 2, 1, 0, 0, 0],
-            [0, 0, 0, 1, 2, 3, 0, 0],
-            [0, 0, 0, 0, 3, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0],
-        ],
-        ['board', discordSdk.channelId]
-    );
+    const [board, setBoard] = useSyncState<(0 | 1 | 2 | 3)[][]>(INIT_BOARD, [
+        'board',
+        discordSdk.channelId,
+    ]);
     const isUserP1 = p1 && user && p1.id === user.id;
     const isUserP2 = p2 && user && p2.id === user.id;
+    const [score1, score2] = getScores(board);
 
     function isInBound(i: number, j: number): boolean {
         return i >= 0 && i < ROWS && j >= 0 && j < COLS;
@@ -240,7 +243,20 @@ export function Activity() {
     }
 
     function getScores(board: (0 | 1 | 2 | 3)[][]): [number, number] {
-        return [0, 0];
+        let score1 = 0;
+        let score2 = 0;
+
+        for (let i = 0; i < board.length; i++) {
+            for (let j = 0; j < board[0].length; j++) {
+                if (board[i][j] === 1) {
+                    score1++;
+                } else if (board[i][j] === 2) {
+                    score2++;
+                }
+            }
+        }
+
+        return [score1, score2];
     }
 
     function updateBoard(i: number, j: number) {
@@ -457,8 +473,6 @@ export function Activity() {
             newBoard[i][j] = 3;
         }
 
-        const [blackScore, whiteScore] = getScores(newBoard);
-
         setBoard(newBoard);
         setTurn((oldVal) => (oldVal === 1 ? 2 : 1));
     }
@@ -483,6 +497,9 @@ export function Activity() {
     return (
         <>
             <div className="w-full h-screen bg-[#302e2b] flex justify-center items-center">
+                <div className="fixed left-0 top-0 h-full w-10">
+                    <Scores score1={score1} score2={score2} />
+                </div>
                 <Board board={board} updateBoard={updateBoard} />
                 <div className="absolute right-0 p-2 top-0 w-48 h-screen bg-[#262522] text-white flex-col gap-4 overflow-auto">
                     <div className="mb-2">Black</div>
