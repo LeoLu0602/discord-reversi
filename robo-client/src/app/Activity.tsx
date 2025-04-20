@@ -256,6 +256,14 @@ export function Activity() {
             }
         }
 
+        if (score1 === 0 || score2 === 0) {
+            if (score1 > score2) {
+                alert('Black Won!');
+            } else {
+                alert('White Won!');
+            }
+        }
+
         return [score1, score2];
     }
 
@@ -477,6 +485,8 @@ export function Activity() {
         setTurn((oldVal) => (oldVal === 1 ? 2 : 1));
     }
 
+    function cleanUp() {}
+
     useEffect(() => {
         if (session) {
             const { id, username, global_name, avatar } = session.user;
@@ -509,11 +519,9 @@ export function Activity() {
                         <button
                             className="block w-full h-24 bg-[#373633] hover:bg-[#5b5954] text-4xl cursor-pointer mb-2"
                             onClick={() => {
-                                if (isUserP2) {
-                                    setP2(null);
+                                if (!isUserP1 && !isUserP2) {
+                                    setP1({ ...user });
                                 }
-
-                                setP1({ ...user });
                             }}
                         >
                             &#43;
@@ -526,16 +534,26 @@ export function Activity() {
                         <button
                             className="block w-full h-24 bg-[#373633] hover:bg-[#5b5954] text-4xl cursor-pointer mb-2"
                             onClick={() => {
-                                if (isUserP1) {
-                                    setP1(null);
+                                if (!isUserP1 && !isUserP2) {
+                                    setP1({ ...user });
                                 }
-
-                                setP2(user);
                             }}
                         >
                             &#43;
                         </button>
                     )}
+                    <button
+                        className="w-full h-8 bg-red-500 hover:bg-red-400 cursor-pointer"
+                        onClick={() => {
+                            if (isUserP1) {
+                                setP1(null);
+                            } else if (isUserP2) {
+                                setP2(null);
+                            }
+                        }}
+                    >
+                        Surrender
+                    </button>
                 </div>
             </div>
         </>
