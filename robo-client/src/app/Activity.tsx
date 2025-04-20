@@ -35,8 +35,17 @@ export function Activity() {
 		2: white
 		3: legal move
     */
-    const [board, setBoard] = useSyncState<number[][]>(
-        new Array(ROWS).fill(null).map(() => new Array(COLS).fill(0)),
+    const [board, setBoard] = useSyncState<(0 | 1 | 2 | 3)[][]>(
+        [
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 3, 0, 0, 0, 0],
+            [0, 0, 3, 2, 1, 0, 0, 0],
+            [0, 0, 0, 1, 2, 3, 0, 0],
+            [0, 0, 0, 0, 3, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0],
+        ],
         ['board', discordSdk.channelId]
     );
     const isUserP1 = p1 && user && p1.id === user.id;
@@ -250,69 +259,115 @@ export function Activity() {
 
         let ii;
         let jj;
+        let tmp;
 
         // ↑
         ii = i - 1;
         jj = j;
+        tmp = [];
 
         while (isInBound(ii, jj)) {
-            if (newBoard[ii][jj] === turn || newBoard[ii][jj] === 0) {
+            if (newBoard[ii][jj] === 0) {
                 break;
             }
 
-            newBoard[ii][jj] = turn;
+            if (newBoard[ii][jj] === turn) {
+                for (const [i, j] of tmp) {
+                    newBoard[i][j] = turn;
+                }
+
+                break;
+            }
+
+            tmp.push([ii, jj]);
             ii--;
         }
 
         // ↓
         ii = i + 1;
         jj = j;
+        tmp = [];
 
         while (isInBound(ii, jj)) {
-            if (newBoard[ii][jj] === turn || newBoard[ii][jj] === 0) {
+            if (newBoard[ii][jj] === 0) {
                 break;
             }
 
-            newBoard[ii][jj] = turn;
+            if (newBoard[ii][jj] === turn) {
+                for (const [i, j] of tmp) {
+                    newBoard[i][j] = turn;
+                }
+
+                break;
+            }
+
+            tmp.push([ii, jj]);
             ii++;
         }
 
         // ←
         ii = i;
         jj = j - 1;
+        tmp = [];
 
         while (isInBound(ii, jj)) {
-            if (newBoard[ii][jj] === turn || newBoard[ii][jj] === 0) {
+            if (newBoard[ii][jj] === 0) {
                 break;
             }
 
-            newBoard[ii][jj] = turn;
+            if (newBoard[ii][jj] === turn) {
+                for (const [i, j] of tmp) {
+                    newBoard[i][j] = turn;
+                }
+
+                break;
+            }
+
+            tmp.push([ii, jj]);
             jj--;
         }
 
         // →
         ii = i;
         jj = j + 1;
+        tmp = [];
 
         while (isInBound(ii, jj)) {
-            if (newBoard[ii][jj] === turn || newBoard[ii][jj] === 0) {
+            if (newBoard[ii][jj] === 0) {
                 break;
             }
 
-            newBoard[ii][jj] = turn;
+            if (newBoard[ii][jj] === turn) {
+                for (const [i, j] of tmp) {
+                    newBoard[i][j] = turn;
+                }
+
+                break;
+            }
+
+            tmp.push([ii, jj]);
             jj++;
         }
 
         // ↖
         ii = i - 1;
         jj = j - 1;
+        tmp = [];
 
         while (isInBound(ii, jj)) {
-            if (newBoard[ii][jj] === turn || newBoard[ii][jj] === 0) {
+            if (newBoard[ii][jj] === 0) {
                 break;
             }
 
-            newBoard[ii][jj] = turn;
+            if (newBoard[ii][jj] === turn) {
+                for (const [i, j] of tmp) {
+                    newBoard[i][j] = turn;
+                }
+
+                break;
+            }
+
+            tmp.push([ii, jj]);
             ii--;
             jj--;
         }
@@ -320,13 +375,22 @@ export function Activity() {
         // ↙
         ii = i + 1;
         jj = j - 1;
+        tmp = [];
 
         while (isInBound(ii, jj)) {
-            if (newBoard[ii][jj] === turn || newBoard[ii][jj] === 0) {
+            if (newBoard[ii][jj] === 0) {
                 break;
             }
 
-            newBoard[ii][jj] = turn;
+            if (newBoard[ii][jj] === turn) {
+                for (const [i, j] of tmp) {
+                    newBoard[i][j] = turn;
+                }
+
+                break;
+            }
+
+            tmp.push([ii, jj]);
             ii++;
             jj++;
         }
@@ -334,13 +398,22 @@ export function Activity() {
         // ↗
         ii = i - 1;
         jj = j + 1;
+        tmp = [];
 
         while (isInBound(ii, jj)) {
-            if (newBoard[ii][jj] === turn || newBoard[ii][jj] === 0) {
+            if (newBoard[ii][jj] === 0) {
                 break;
             }
 
-            newBoard[ii][jj] = turn;
+            if (newBoard[ii][jj] === turn) {
+                for (const [i, j] of tmp) {
+                    newBoard[i][j] = turn;
+                }
+
+                break;
+            }
+
+            tmp.push([ii, jj]);
             ii--;
             jj++;
         }
@@ -348,13 +421,22 @@ export function Activity() {
         // ↘
         ii = i + 1;
         jj = j + 1;
+        tmp = [];
 
         while (isInBound(ii, jj)) {
-            if (newBoard[ii][jj] === turn || newBoard[ii][jj] === 0) {
+            if (newBoard[ii][jj] === 0) {
                 break;
             }
 
-            newBoard[ii][jj] = turn;
+            if (newBoard[ii][jj] === turn) {
+                for (const [i, j] of tmp) {
+                    newBoard[i][j] = turn;
+                }
+
+                break;
+            }
+
+            tmp.push([ii, jj]);
             ii++;
             jj++;
         }
@@ -379,25 +461,12 @@ export function Activity() {
                 global_name: global_name ?? '',
                 avatar: avatar ?? '',
             });
-
-            const newBoard = structuredClone(board);
-
-            newBoard[3][3] = 2;
-            newBoard[3][4] = 1;
-            newBoard[4][3] = 1;
-            newBoard[4][4] = 2;
-
-            const legalMoves = searchLegalMoves(newBoard, 1);
-
-            console.log(legalMoves);
-
-            for (const [i, j] of legalMoves) {
-                newBoard[i][j] = 3;
-            }
-
-            setBoard(newBoard);
         }
     }, [session]);
+
+    useEffect(() => {
+        return () => {};
+    }, []);
 
     if (!user) {
         <div className="w-full h-screen bg-[#302e2b] flex justify-center items-center" />;
