@@ -52,11 +52,12 @@ export function Activity() {
         'board',
         discordSdk.instanceId,
     ]);
-    const isUserP1 = p1 && user && p1.id === user.id;
-    const isUserP2 = p2 && user && p2.id === user.id;
-    const canUserJoin = user && !isUserP1 && !isUserP2;
+    const isUserP1 = p1 !== null && user !== null && p1.id === user.id;
+    const isUserP2 = p2 !== null && user !== null && p2.id === user.id;
+    const canUserJoin = user !== null && !isUserP1 && !isUserP2;
     const [score1, score2] = getScores(board);
-    const [showGameOver, setShowGameOver] = useState<boolean>(false);
+    const isGameOver =
+        score1 === 0 || score2 === 0 || score1 + score2 === ROWS * COLS;
 
     function isInBound(i: number, j: number): boolean {
         return i >= 0 && i < ROWS && j >= 0 && j < COLS;
@@ -258,10 +259,6 @@ export function Activity() {
                     score2++;
                 }
             }
-        }
-
-        if (score1 === 0 || score2 === 0 || score1 + score2 === ROWS * COLS) {
-            setShowGameOver(true);
         }
 
         return [score1, score2];
@@ -512,14 +509,14 @@ export function Activity() {
     return (
         <>
             <div className="w-full h-screen bg-[#302e2b] flex justify-center items-center">
-                {showGameOver && (
+                {isGameOver && (
                     <GameOver
                         score1={score1}
                         score2={score2}
                         p1={p1}
                         p2={p2}
-                        close={() => {
-                            setShowGameOver(false);
+                        cleanUp={() => {
+                            cleanUp();
                         }}
                     />
                 )}
