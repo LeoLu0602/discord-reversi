@@ -424,7 +424,7 @@ export function Activity() {
 
             tmp.push([ii, jj]);
             ii++;
-            jj++;
+            jj--;
         }
 
         // ↗
