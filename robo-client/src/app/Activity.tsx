@@ -4,6 +4,7 @@ import { useSyncState } from '@robojs/sync';
 import UserCard from '../components/UserCard';
 import Board from '../components/Board';
 import Scores from '../components/Scores';
+import GameOver from '../components/GameOver';
 import clsx from 'clsx';
 
 export interface UserType {
@@ -55,6 +56,7 @@ export function Activity() {
     const isUserP2 = p2 && user && p2.id === user.id;
     const canUserJoin = user && !isUserP1 && !isUserP2;
     const [score1, score2] = getScores(board);
+    const [showGameOver, setShowGameOver] = useState<boolean>(false);
 
     function isInBound(i: number, j: number): boolean {
         return i >= 0 && i < ROWS && j >= 0 && j < COLS;
@@ -259,7 +261,7 @@ export function Activity() {
         }
 
         if (score1 === 0 || score2 === 0 || score1 + score2 === ROWS * COLS) {
-            handleGameOver(score1, score2);
+            setShowGameOver(true);
         }
 
         return [score1, score2];
@@ -483,22 +485,6 @@ export function Activity() {
         setTurn((oldVal) => (oldVal === 1 ? 2 : 1));
     }
 
-    function handleGameOver(score1: number, score2: number) {
-        if (!p1 || !p2) {
-            return;
-        }
-
-        if (score1 > score2) {
-            console.log(p1.username, ' won');
-        } else if (score2 > score1) {
-            console.log(p2.username, ' won');
-        } else {
-            console.log('tie');
-        }
-
-        cleanUp();
-    }
-
     function cleanUp() {
         setP1(null);
         setP2(null);
@@ -526,6 +512,17 @@ export function Activity() {
     return (
         <>
             <div className="w-full h-screen bg-[#302e2b] flex justify-center items-center">
+                {showGameOver && (
+                    <GameOver
+                        score1={score1}
+                        score2={score2}
+                        p1={p1}
+                        p2={p2}
+                        close={() => {
+                            setShowGameOver(false);
+                        }}
+                    />
+                )}
                 <div className="fixed left-0 top-0 h-full w-10">
                     <Scores score1={score1} score2={score2} />
                 </div>
