@@ -4,6 +4,7 @@ import { useSyncState } from '@robojs/sync';
 import UserCard from '../components/UserCard';
 import Board from '../components/Board';
 import Scores from '../components/Scores';
+import clsx from 'clsx';
 
 export interface UserType {
     id: string;
@@ -30,15 +31,15 @@ export function Activity() {
     const [user, setUser] = useState<UserType | null>(null);
     const [p1, setP1] = useSyncState<UserType | null>(null, [
         'p1',
-        discordSdk.channelId,
+        discordSdk.instanceId,
     ]);
     const [p2, setP2] = useSyncState<UserType | null>(null, [
         'p2',
-        discordSdk.channelId,
+        discordSdk.instanceId,
     ]);
     const [turn, setTurn] = useSyncState<1 | 2>(1, [
         'turn',
-        discordSdk.channelId,
+        discordSdk.instanceId,
     ]);
     /*
 		0: illegal move
@@ -48,10 +49,11 @@ export function Activity() {
     */
     const [board, setBoard] = useSyncState<(0 | 1 | 2 | 3)[][]>(INIT_BOARD, [
         'board',
-        discordSdk.channelId,
+        discordSdk.instanceId,
     ]);
     const isUserP1 = p1 && user && p1.id === user.id;
     const isUserP2 = p2 && user && p2.id === user.id;
+    const canUserJoin = user && !isUserP1 && !isUserP2;
     const [score1, score2] = getScores(board);
 
     function isInBound(i: number, j: number): boolean {
@@ -256,12 +258,8 @@ export function Activity() {
             }
         }
 
-        if (score1 === 0 || score2 === 0) {
-            if (score1 > score2) {
-                alert('Black Won!');
-            } else {
-                alert('White Won!');
-            }
+        if (score1 === 0 || score2 === 0 || score1 + score2 === ROWS * COLS) {
+            handleGameOver(score1, score2);
         }
 
         return [score1, score2];
@@ -485,7 +483,28 @@ export function Activity() {
         setTurn((oldVal) => (oldVal === 1 ? 2 : 1));
     }
 
-    function cleanUp() {}
+    function handleGameOver(score1: number, score2: number) {
+        if (!p1 || !p2) {
+            return;
+        }
+
+        if (score1 > score2) {
+            console.log(p1.username, ' won');
+        } else if (score2 > score1) {
+            console.log(p2.username, ' won');
+        } else {
+            console.log('tie');
+        }
+
+        cleanUp();
+    }
+
+    function cleanUp() {
+        setP1(null);
+        setP2(null);
+        setTurn(1);
+        setBoard(INIT_BOARD);
+    }
 
     useEffect(() => {
         if (session) {
@@ -517,9 +536,16 @@ export function Activity() {
                         <UserCard user={p1} isUserTurn={turn === 1} />
                     ) : (
                         <button
-                            className="block w-full h-24 bg-[#373633] hover:bg-[#5b5954] text-4xl cursor-pointer mb-2"
+                            className={clsx(
+                                'block w-full h-24 bg-[#373633] text-4xl  mb-2',
+                                {
+                                    'hover:bg-[#5b5954] cursor-pointer':
+                                        canUserJoin,
+                                    'cursor-not-allowed': !canUserJoin,
+                                }
+                            )}
                             onClick={() => {
-                                if (!isUserP1 && !isUserP2) {
+                                if (canUserJoin) {
                                     setP1({ ...user });
                                 }
                             }}
@@ -532,9 +558,16 @@ export function Activity() {
                         <UserCard user={p2} isUserTurn={turn === 2} />
                     ) : (
                         <button
-                            className="block w-full h-24 bg-[#373633] hover:bg-[#5b5954] text-4xl cursor-pointer mb-2"
+                            className={clsx(
+                                'block w-full h-24 bg-[#373633] text-4xl  mb-2',
+                                {
+                                    'hover:bg-[#5b5954] cursor-pointer':
+                                        canUserJoin,
+                                    'cursor-not-allowed': !canUserJoin,
+                                }
+                            )}
                             onClick={() => {
-                                if (!isUserP1 && !isUserP2) {
+                                if (canUserJoin) {
                                     setP2({ ...user });
                                 }
                             }}
@@ -542,18 +575,6 @@ export function Activity() {
                             &#43;
                         </button>
                     )}
-                    <button
-                        className="w-full h-8 bg-red-500 hover:bg-red-400 cursor-pointer"
-                        onClick={() => {
-                            if (isUserP1) {
-                                setP1(null);
-                            } else if (isUserP2) {
-                                setP2(null);
-                            }
-                        }}
-                    >
-                        Surrender
-                    </button>
                 </div>
             </div>
         </>
