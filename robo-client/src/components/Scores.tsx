@@ -9,11 +9,17 @@ export default function Scores({
         <div className="w-full h-full flex flex-col justify-between bg-emerald-500">
             <div
                 className="w-full bg-[#403d39] text-white flex justify-center items-center"
-                style={{ height: `${(score1 / 64) * 100}%` }}
+                style={{
+                    height: `${(score1 / 64) * 100}%`,
+                    transition: 'height 1s',
+                }}
             />
             <div
                 className="w-full bg-white text-white flex justify-center items-center"
-                style={{ height: `${(score2 / 64) * 100}%` }}
+                style={{
+                    height: `${(score2 / 64) * 100}%`,
+                    transition: 'height 1s',
+                }}
             />
         </div>
     );

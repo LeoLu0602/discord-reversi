@@ -51,22 +51,22 @@ export function Activity() {
         'board',
         discordSdk.instanceId,
     ]);
+    const [score1, setScore1] = useSyncState<number>(2, [
+        'score1',
+        discordSdk.instanceId,
+    ]);
+    const [score2, setScore2] = useSyncState<number>(2, [
+        'score2',
+        discordSdk.instanceId,
+    ]);
+    const [isGameOver, setIsGameOver] = useSyncState<boolean>(false, [
+        'isGameOver',
+        discordSdk.instanceId,
+    ]);
+    const [showGamOver, setShowGameOver] = useState<boolean>(false);
     const isUserP1 = p1 !== null && user !== null && p1.id === user.id;
     const isUserP2 = p2 !== null && user !== null && p2.id === user.id;
     const canUserJoin = user !== null && !isUserP1 && !isUserP2;
-    const [score1, score2] = getScores(board);
-    let noLegalMove = true;
-
-    for (let i = 0; i < board.length; i++) {
-        for (let j = 0; j < board[0].length; j++) {
-            if (board[i][j] === 3) {
-                noLegalMove = false;
-                break;
-            }
-        }
-    }
-
-    const isGameOver = score1 === 0 || score2 === 0 || noLegalMove;
 
     function isInBound(i: number, j: number): boolean {
         return i >= 0 && i < ROWS && j >= 0 && j < COLS;
@@ -256,7 +256,7 @@ export function Activity() {
         return Array.from(set).map((x) => [Math.floor(x / COLS), x % COLS]);
     }
 
-    function getScores(board: (0 | 1 | 2 | 3)[][]): [number, number] {
+    function updateScores(board: (0 | 1 | 2 | 3)[][]) {
         let score1 = 0;
         let score2 = 0;
 
@@ -270,7 +270,8 @@ export function Activity() {
             }
         }
 
-        return [score1, score2];
+        setScore1(score1);
+        setScore2(score2);
     }
 
     function updateBoard(i: number, j: number) {
@@ -489,6 +490,7 @@ export function Activity() {
 
         setBoard(newBoard);
         setTurn((oldVal) => (oldVal === 1 ? 2 : 1));
+        updateScores(newBoard);
     }
 
     function cleanUp() {
@@ -496,6 +498,10 @@ export function Activity() {
         setP2(null);
         setTurn(1);
         setBoard(INIT_BOARD);
+        setScore1(2);
+        setScore2(2);
+        setIsGameOver(false);
+        setShowGameOver(false);
     }
 
     useEffect(() => {
@@ -511,6 +517,25 @@ export function Activity() {
         }
     }, [session]);
 
+    useEffect(() => {
+        
+        let noLegalMoves = true;
+
+        for (let i = 0; i < board.length; i++) {
+            for (let j = 0; j < board[0].length; j++) {
+                if (board[i][j] === 3) {
+                    noLegalMoves = false;
+                    break;
+                }
+            }
+        }
+
+        if (noLegalMoves) {
+            setIsGameOver(true);
+            setShowGameOver(true);
+        }
+    }, [board]);
+
     if (!user) {
         <div className="w-full h-screen bg-[#302e2b] flex justify-center items-center" />;
     }
@@ -518,20 +543,20 @@ export function Activity() {
     return (
         <>
             <div className="w-full h-screen bg-[#302e2b] flex justify-center items-center">
-                {isGameOver && (
+                {showGamOver && (
                     <GameOver
                         score1={score1}
                         score2={score2}
                         p1={p1}
                         p2={p2}
-                        cleanUp={() => {
-                            cleanUp();
+                        close={() => {
+                            setShowGameOver(false);
                         }}
                     />
                 )}
                 <Board
                     board={board}
-                    score1={score2}
+                    score1={score1}
                     score2={score2}
                     updateBoard={updateBoard}
                 />
@@ -578,6 +603,16 @@ export function Activity() {
                             }}
                         >
                             &#43;
+                        </button>
+                    )}
+                    {isGameOver && (
+                        <button
+                            className="w-full bg-sky-500 hover:bg-sky-400 font-bold p-2 cursor-pointer"
+                            onClick={() => {
+                                cleanUp();
+                            }}
+                        >
+                            New Game
                         </button>
                     )}
                 </div>

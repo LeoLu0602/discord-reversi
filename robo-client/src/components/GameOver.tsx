@@ -6,13 +6,13 @@ export default function GameOver({
     score2,
     p1,
     p2,
-    cleanUp,
+    close,
 }: {
     score1: number;
     score2: number;
     p1: UserType | null;
     p2: UserType | null;
-    cleanUp: () => void;
+    close: () => void;
 }) {
     if (!p1 || !p2) {
         return <></>;
@@ -30,7 +30,7 @@ export default function GameOver({
             <button
                 className="text-white cursor-pointer font-bold absolute right-4 top-4"
                 onClick={() => {
-                    cleanUp();
+                    close();
                 }}
             >
                 &#10005;
