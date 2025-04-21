@@ -55,8 +55,18 @@ export function Activity() {
     const isUserP2 = p2 !== null && user !== null && p2.id === user.id;
     const canUserJoin = user !== null && !isUserP1 && !isUserP2;
     const [score1, score2] = getScores(board);
-    const isGameOver =
-        score1 === 0 || score2 === 0 || score1 + score2 === ROWS * COLS;
+    let noLegalMove = true;
+
+    for (let i = 0; i < board.length; i++) {
+        for (let j = 0; j < board[0].length; j++) {
+            if (board[i][j] === 3) {
+                noLegalMove = false;
+                break;
+            }
+        }
+    }
+
+    const isGameOver = score1 === 0 || score2 === 0 || noLegalMove;
 
     function isInBound(i: number, j: number): boolean {
         return i >= 0 && i < ROWS && j >= 0 && j < COLS;
