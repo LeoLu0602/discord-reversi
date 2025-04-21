@@ -3,7 +3,6 @@ import { useDiscordSdk } from '../hooks/useDiscordSdk';
 import { useSyncState } from '@robojs/sync';
 import UserCard from '../components/UserCard';
 import Board from '../components/Board';
-import Scores from '../components/Scores';
 import GameOver from '../components/GameOver';
 import clsx from 'clsx';
 
@@ -520,10 +519,12 @@ export function Activity() {
                         }}
                     />
                 )}
-                <div className="fixed left-0 top-0 h-full w-10">
-                    <Scores score1={score1} score2={score2} />
-                </div>
-                <Board board={board} updateBoard={updateBoard} />
+                <Board
+                    board={board}
+                    score1={score2}
+                    score2={score2}
+                    updateBoard={updateBoard}
+                />
                 <div className="absolute right-0 p-2 top-0 w-48 h-screen bg-[#262522] text-white flex-col gap-4 overflow-auto">
                     <div className="mb-2">Black</div>
                     {p1 ? (

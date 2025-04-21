@@ -6,13 +6,13 @@ export default function Scores({
     score2: number;
 }) {
     return (
-        <div className="w-full h-full flex flex-col justify-between bg-[#262522]">
+        <div className="w-full h-full flex flex-col justify-between bg-emerald-500">
             <div
-                className="w-full bg-red-500 text-white flex justify-center items-center"
+                className="w-full bg-[#403d39] text-white flex justify-center items-center"
                 style={{ height: `${(score1 / 64) * 100}%` }}
             />
             <div
-                className="w-full bg-blue-500 text-white flex justify-center items-center"
+                className="w-full bg-white text-white flex justify-center items-center"
                 style={{ height: `${(score2 / 64) * 100}%` }}
             />
         </div>
