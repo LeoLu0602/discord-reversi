@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
-import { useDiscordSdk } from '../hooks/useDiscordSdk';
+import { useNavigate } from 'react-router';
 import { useSyncState } from '@robojs/sync';
+import clsx from 'clsx';
+import { useDiscordSdk } from '../hooks/useDiscordSdk';
 import UserCard from '../components/UserCard';
 import Board from '../components/Board';
 import GameOver from '../components/GameOver';
-import clsx from 'clsx';
 
 export interface UserType {
     id: string;
@@ -27,6 +28,7 @@ const INIT_BOARD: (0 | 1 | 2 | 3)[][] = [
 ];
 
 export function Activity() {
+    const navigate = useNavigate();
     const { session, discordSdk } = useDiscordSdk();
     const [user, setUser] = useState<UserType | null>(null);
     const [p1, setP1] = useSyncState<UserType | null>(null, [
@@ -63,7 +65,6 @@ export function Activity() {
         'isGameOver',
         discordSdk.instanceId,
     ]);
-    const [showGamOver, setShowGameOver] = useState<boolean>(false);
     const isUserP1 = p1 !== null && user !== null && p1.id === user.id;
     const isUserP2 = p2 !== null && user !== null && p2.id === user.id;
     const canUserJoin = user !== null && !isUserP1 && !isUserP2;
@@ -501,7 +502,6 @@ export function Activity() {
         setScore1(2);
         setScore2(2);
         setIsGameOver(false);
-        setShowGameOver(false);
     }
 
     useEffect(() => {
@@ -531,7 +531,6 @@ export function Activity() {
 
         if (noLegalMoves) {
             setIsGameOver(true);
-            setShowGameOver(true);
         }
     }, [board]);
 
@@ -541,16 +540,8 @@ export function Activity() {
 
     return (
         <div className="w-full h-screen bg-[#302e2b] flex justify-center items-center">
-            {showGamOver && (
-                <GameOver
-                    score1={score1}
-                    score2={score2}
-                    p1={p1}
-                    p2={p2}
-                    close={() => {
-                        setShowGameOver(false);
-                    }}
-                />
+            {isGameOver && (
+                <GameOver score1={score1} score2={score2} p1={p1} p2={p2} />
             )}
             <Board
                 board={board}
@@ -558,14 +549,14 @@ export function Activity() {
                 score2={score2}
                 updateBoard={updateBoard}
             />
-            <div className="absolute right-0 p-2 top-0 w-48 h-screen bg-[#262522] text-white flex-col gap-4 overflow-auto">
-                <div className="mb-2">Black</div>
+            <div className="fixed right-0 p-2 top-0 w-48 h-screen bg-[#262522] text-white flex flex-col gap-2">
+                <div>Black</div>
                 {p1 ? (
                     <UserCard user={p1} isUserTurn={turn === 1} />
                 ) : (
                     <button
                         className={clsx(
-                            'block w-full h-24 bg-[#373633] text-4xl  mb-2',
+                            'block w-full h-24 bg-[#373633] text-4xl mb-2 rounded-lg',
                             {
                                 'hover:bg-[#5b5954] cursor-pointer':
                                     canUserJoin,
@@ -581,13 +572,13 @@ export function Activity() {
                         &#43;
                     </button>
                 )}
-                <div className="mb-2">White</div>
+                <div>White</div>
                 {p2 ? (
                     <UserCard user={p2} isUserTurn={turn === 2} />
                 ) : (
                     <button
                         className={clsx(
-                            'block w-full h-24 bg-[#373633] text-4xl  mb-2',
+                            'block w-full h-24 bg-[#373633] text-4xl mb-2 rounded-lg',
                             {
                                 'hover:bg-[#5b5954] cursor-pointer':
                                     canUserJoin,
@@ -603,16 +594,15 @@ export function Activity() {
                         &#43;
                     </button>
                 )}
-                {isGameOver && (
-                    <button
-                        className="w-full bg-sky-500 hover:bg-sky-400 font-bold p-2 cursor-pointer"
-                        onClick={() => {
-                            cleanUp();
-                        }}
-                    >
-                        New Game
-                    </button>
-                )}
+                <button
+                    className="bg-red-500 hover:bg-red-400 cursor-pointer text-white w-full px-4 py-2 rounded-lg font-bold"
+                    onClick={() => {
+                        cleanUp();
+                        navigate('/');
+                    }}
+                >
+                    Leave
+                </button>
             </div>
         </div>
     );

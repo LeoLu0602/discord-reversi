@@ -1,18 +1,16 @@
-import { UserType } from '../app/Activity';
 import clsx from 'clsx';
+import { UserType } from '../app/Activity';
 
 export default function GameOver({
     score1,
     score2,
     p1,
     p2,
-    close,
 }: {
     score1: number;
     score2: number;
     p1: UserType | null;
     p2: UserType | null;
-    close: () => void;
 }) {
     if (!p1 || !p2) {
         return <></>;
@@ -26,15 +24,7 @@ export default function GameOver({
             : 0;
 
     return (
-        <div className="fixed text-xl top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#262522] w-72 h-72 flex flex-col justify-center gap-4 rounded-lg">
-            <button
-                className="text-white cursor-pointer font-bold absolute right-4 top-4"
-                onClick={() => {
-                    close();
-                }}
-            >
-                &#10005;
-            </button>
+        <div className="fixed text-xl top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#262522] w-72 h-72 flex flex-col justify-center items-center gap-6 rounded-lg">
             <div className="flex justify-center items-center text-white font-bold">
                 {result === 0
                     ? 'TIE'
