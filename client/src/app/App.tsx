@@ -1,8 +1,9 @@
 import { SyncContextProvider } from '@robojs/sync';
 import { BrowserRouter, Routes, Route } from 'react-router';
 import { DiscordContextProvider } from '../hooks/useDiscordSdk';
-import { Activity } from './Activity';
 import Home from './Home';
+import { Activity } from './Activity';
+import Tournament from './Tournament';
 import './App.css';
 
 /**
@@ -26,6 +27,7 @@ export default function App() {
                     <Routes>
                         <Route path="/" element={<Home />} />
                         <Route path="/game" element={<Activity />} />
+                        <Route path="/tournament" element={<Tournament />} />
                     </Routes>
                 </BrowserRouter>
             </SyncContextProvider>
