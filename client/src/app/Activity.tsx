@@ -518,7 +518,6 @@ export function Activity() {
     }, [session]);
 
     useEffect(() => {
-        
         let noLegalMoves = true;
 
         for (let i = 0; i < board.length; i++) {

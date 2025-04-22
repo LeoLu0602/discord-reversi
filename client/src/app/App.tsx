@@ -1,6 +1,8 @@
+import { SyncContextProvider } from '@robojs/sync';
+import { BrowserRouter, Routes, Route } from 'react-router';
 import { DiscordContextProvider } from '../hooks/useDiscordSdk';
 import { Activity } from './Activity';
-import { SyncContextProvider } from '@robojs/sync';
+import Home from './Home';
 import './App.css';
 
 /**
@@ -20,7 +22,12 @@ export default function App() {
     return (
         <DiscordContextProvider authenticate scope={['identify', 'guilds']}>
             <SyncContextProvider>
-                <Activity />
+                <BrowserRouter>
+                    <Routes>
+                        <Route path="/" element={<Home />} />
+                        <Route path="/game" element={<Activity />} />
+                    </Routes>
+                </BrowserRouter>
             </SyncContextProvider>
         </DiscordContextProvider>
     );
