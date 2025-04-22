@@ -13,7 +13,7 @@ export default function UserCard({
             className={clsx(
                 'w-full h-24 p-2 bg-[#373633] flex items-center rounded-lg',
                 {
-                    'bg-amber-500': isUserTurn,
+                    'bg-sky-500': isUserTurn,
                 }
             )}
         >
