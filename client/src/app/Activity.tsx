@@ -540,82 +540,80 @@ export function Activity() {
     }
 
     return (
-        <>
-            <div className="w-full h-screen bg-[#302e2b] flex justify-center items-center">
-                {showGamOver && (
-                    <GameOver
-                        score1={score1}
-                        score2={score2}
-                        p1={p1}
-                        p2={p2}
-                        close={() => {
-                            setShowGameOver(false);
-                        }}
-                    />
-                )}
-                <Board
-                    board={board}
+        <div className="w-full h-screen bg-[#302e2b] flex justify-center items-center">
+            {showGamOver && (
+                <GameOver
                     score1={score1}
                     score2={score2}
-                    updateBoard={updateBoard}
+                    p1={p1}
+                    p2={p2}
+                    close={() => {
+                        setShowGameOver(false);
+                    }}
                 />
-                <div className="absolute right-0 p-2 top-0 w-48 h-screen bg-[#262522] text-white flex-col gap-4 overflow-auto">
-                    <div className="mb-2">Black</div>
-                    {p1 ? (
-                        <UserCard user={p1} isUserTurn={turn === 1} />
-                    ) : (
-                        <button
-                            className={clsx(
-                                'block w-full h-24 bg-[#373633] text-4xl  mb-2',
-                                {
-                                    'hover:bg-[#5b5954] cursor-pointer':
-                                        canUserJoin,
-                                    'cursor-not-allowed': !canUserJoin,
-                                }
-                            )}
-                            onClick={() => {
-                                if (canUserJoin) {
-                                    setP1({ ...user });
-                                }
-                            }}
-                        >
-                            &#43;
-                        </button>
-                    )}
-                    <div className="mb-2">White</div>
-                    {p2 ? (
-                        <UserCard user={p2} isUserTurn={turn === 2} />
-                    ) : (
-                        <button
-                            className={clsx(
-                                'block w-full h-24 bg-[#373633] text-4xl  mb-2',
-                                {
-                                    'hover:bg-[#5b5954] cursor-pointer':
-                                        canUserJoin,
-                                    'cursor-not-allowed': !canUserJoin,
-                                }
-                            )}
-                            onClick={() => {
-                                if (canUserJoin) {
-                                    setP2({ ...user });
-                                }
-                            }}
-                        >
-                            &#43;
-                        </button>
-                    )}
-                    {isGameOver && (
-                        <button
-                            className="w-full bg-sky-500 hover:bg-sky-400 font-bold p-2 cursor-pointer"
-                            onClick={() => {
-                                cleanUp();
-                            }}
-                        >
-                            New Game
-                        </button>
-                    )}
-                </div>
+            )}
+            <Board
+                board={board}
+                score1={score1}
+                score2={score2}
+                updateBoard={updateBoard}
+            />
+            <div className="absolute right-0 p-2 top-0 w-48 h-screen bg-[#262522] text-white flex-col gap-4 overflow-auto">
+                <div className="mb-2">Black</div>
+                {p1 ? (
+                    <UserCard user={p1} isUserTurn={turn === 1} />
+                ) : (
+                    <button
+                        className={clsx(
+                            'block w-full h-24 bg-[#373633] text-4xl  mb-2',
+                            {
+                                'hover:bg-[#5b5954] cursor-pointer':
+                                    canUserJoin,
+                                'cursor-not-allowed': !canUserJoin,
+                            }
+                        )}
+                        onClick={() => {
+                            if (canUserJoin) {
+                                setP1({ ...user });
+                            }
+                        }}
+                    >
+                        &#43;
+                    </button>
+                )}
+                <div className="mb-2">White</div>
+                {p2 ? (
+                    <UserCard user={p2} isUserTurn={turn === 2} />
+                ) : (
+                    <button
+                        className={clsx(
+                            'block w-full h-24 bg-[#373633] text-4xl  mb-2',
+                            {
+                                'hover:bg-[#5b5954] cursor-pointer':
+                                    canUserJoin,
+                                'cursor-not-allowed': !canUserJoin,
+                            }
+                        )}
+                        onClick={() => {
+                            if (canUserJoin) {
+                                setP2({ ...user });
+                            }
+                        }}
+                    >
+                        &#43;
+                    </button>
+                )}
+                {isGameOver && (
+                    <button
+                        className="w-full bg-sky-500 hover:bg-sky-400 font-bold p-2 cursor-pointer"
+                        onClick={() => {
+                            cleanUp();
+                        }}
+                    >
+                        New Game
+                    </button>
+                )}
             </div>
-        </>
+        </div>
     );
 }
